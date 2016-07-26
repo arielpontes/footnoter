@@ -8,11 +8,89 @@
     <script src="js/index.js"></script>
   </head>
   <body>
-    <button type="button" name="button" id="button">Parse references</button><br>
+    <h1>Footnoter</h1>
+    <div>
+      <p>
+        Write your text with inline references like this:
+      </p>
+      <blockquote>
+        <p>
+          Lorem ipsum dolor sit amet<b>[ref]my first reference[/ref]</b>,
+          consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+          labore et dolore magna aliqua<b>[ref]my second reference[/ref]</b>.
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+          nisi ut aliquip ex ea commodo consequat.
+        </p>
+        <p>
+          <b>[reflist]</b>
+        </p>
+      </blockquote>
+      <p>
+        <span class="note">* Bold used for visual effect only, your text doesn't actually have to be bold.</span>
+      </p>
+      <p>
+        The output should look like this:
+      </p>
+      <blockquote>
+        <p>
+          Lorem ipsum dolor sit amet<sup><a href="#">[1]</a></sup>,
+          consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+          labore et dolore magna aliqua<sup><a href="#">[2]</a></sup>.
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+          nisi ut aliquip ex ea commodo consequat.
+        </p>
+        <p>
+          References
+        </p>
+        <ol>
+          <li>
+            my first reference
+          </li>
+          <li>
+            my second reference
+          </li>
+        </ol>
+      </blockquote>
+    </div>
+    <h1>Try it out</h1>
     <div class="container left-container">
-      <div id="text" contenteditable="true" class="footnoter">
-
-      </div>
+      <div id="text" contenteditable="true" data-text="Paste your text here..." class="footnoter"></div>
+    </div>
+    <div class="settings">
+      <h2>Settings</h2>
+      <ul>
+        <li>
+          <p>
+            Text to be used as title for the reference list
+          </p>
+          <p>
+            <input id="reflist-title" type="text" value="References">
+          </p>
+        </li>
+        <li>
+          <p>
+            Are you pasting text from <a href="http://medium.com">Medium</a>?
+          </p>
+          <p>
+            <label><input id="medium" type="checkbox" name="medium" value="yes">Yes</label>
+          </p>
+        </li>
+        <li>
+          <!-- ⁰¹²³⁴⁵⁶⁷⁸⁹ -->
+          <p>
+            Medium does not support superscipt square brackets, would you like
+            your supercript references to include regular parenthesis instead?
+            (For example, this reference<span class="sup">¹²</span> has no
+            parenthesis, but this<span class=sup>⁽³⁾⁽⁴⁾</span> does.
+          </p>
+          <p>
+            <label><input id="parenthesis" type="checkbox" name="medium" value="yes">Yes, I want parenthesis</label>
+          </p>
+        </li>
+        <p>
+          <button type="button" name="button" id="button">Parse references</button><br>
+        </p>
+      </ul>
     </div>
   </body>
 </html>

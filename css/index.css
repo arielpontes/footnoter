@@ -1,5 +1,21 @@
+body {
+  padding: 0 20px 0 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 100;
+  color: #262626;
+}
+
 .container {
   display: inline-block;
+  float: left;
+}
+
+.settings {
+  display: inline-block;
+  max-width: 500px;
+  margin: 10px 0 0 20px;
+  padding: 0 20px 20px 20px;
+  border: 1px solid #dddddd;
   float: left;
 }
 
@@ -9,4 +25,24 @@
   border: 1px solid #dddddd;
   padding: 20px;
   width: 645px;
+}
+
+#text[data-text]:empty:before {
+    content: attr(data-text);
+    color: #999999;
+}
+
+.sup {
+  font-family: Courier;
+  font-weight: bold;
+}
+
+blockquote {
+  background-color: #f7f7f7;
+  padding: 10px;
+}
+
+.note {
+    font-style: italic;
+    color: #999999;
 }

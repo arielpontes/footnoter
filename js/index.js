@@ -1,26 +1,100 @@
 $(function() {
+
+  function loadSettings(){
+    SETTINGS = {
+      "medium": $("#medium")[0].checked,
+      "parenthesis": $("#parenthesis")[0].checked,
+      "reflist-title": $("#reflist-title").val()
+    };
+  }
+
+  function numToSup(num){
+    var supChars = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+    var str = num.toString();
+    var sup = str.replace(
+      /0|1|2|3|4|5|6|7|8|9/gi, function myFunction(x){return supChars[x];});
+    if(SETTINGS["parenthesis"])
+      return "⁽"+sup+"⁾";
+    return " "+sup;
+  }
+
+  function refLink(refNum){
+    if(SETTINGS["medium"]){
+      var supRef = numToSup(refNum);
+      return '<a href="#'+REFLIST_NAME+'">'+supRef+'</a>';
+    } else {
+      return '<sup><a href="#fn'+refNum+'" id="fna'+refNum
+        +'" style="'+A_STYLE+'">['+refNum+']</a></sup>';
+    }
+  }
+
+  function getRefList(references, ref_p_names){
+    var refList = $('<ol style="'+P_STYLE+'"></ol>');
+    $(references).each(function(i, ref){
+      var ref_li;
+      if(SETTINGS["medium"]){
+        ref_li = '<li><a href="#'+ ref_p_names[i] +'">^ </a> '+ref.innerHTML+'</li>';
+      } else {
+        ref_li = '<li id="fn'+(i+1)+'"><a href="#fna'+(i+1)
+        +'" style="'+A_STYLE+'">^</a> '+ref.innerHTML+'</li>';
+      }
+      refList.append(ref_li);
+    });
+    return refList;
+  }
+
   var btn = $('#button'); // The button that triggers the conversion
-  var textDiv = $('#text'); // The main body of text
-  var logDiv = $('#log');
+
   btn.click(function(){
-    var references = []; // A list to hold all references we find
-    var aStyle = "text-decoration: none;"; // Default style to be used for the
+
+    loadSettings();
+    // Loads the settings specified by the user into the global variable SETTINGS
+
+    var textDiv = $('#text'); // The main body of text
+    var logDiv = $('#log');
+
+    var reflistElem = textDiv.find(":contains('[reflist]'):last");
+    // The element under which the reference list will be added
+    if(reflistElem.length == 0){
+      alert(
+        "Your text must include the code '[reflist]'. "
+        + "This is where the reference list will be added.");
+      return;
+    }
+    REFLIST_NAME = reflistElem.attr('name');
+    reflistElem.html(SETTINGS["reflist-title"]);
+
+    var references = [];
+    // A list to hold all references we find
+    var ref_p_names = []
+    // A list to hold the names of the parent paragraph of each reference
+
+    A_STYLE = "text-decoration: none;"; // Default style to be used for the
     // superscript links that will be generated
     var aFirst = $('a').first(); // Get the first link
     if(aFirst){
       var aFirstStyle = aFirst.attr('style'); // If it has a style, use it as
       // default style for new links instead
       if(aFirstStyle){
-        aStyle = aFirstStyle;
+        A_STYLE = aFirstStyle;
       }
     }
     // Same for paragraphs...
-    var pStyle = "";
+    P_STYLE = "";
     var pFirst = $('p').first();
     if(pFirst){
       var pFirstStyle = pFirst.attr('style');
       if(pFirstStyle){
-        pStyle = pFirstStyle;
+        P_STYLE = pFirstStyle;
+      }
+    }
+    // Same for h1...
+    H1_STYLE = "";
+    var firstH1 = $('h1').first();
+    if(firstH1){
+      var styleAttr = firstH1.attr('style');
+      if(styleAttr){
+        H1_STYLE = styleAttr;
       }
     }
     textDiv.children().each(function(i, elem){
@@ -33,33 +107,18 @@ $(function() {
           .replace(/\[\/ref\]/g, '</ref>');
         elem.innerHTML = new_content;
         $(elem).find('ref').each(function(i, elem){
+          // Loop through the inline references
+          var ref_p_name = $(elem).parent().closest('p').attr('name');
           references.push(elem);
+          ref_p_names.push(ref_p_name);
           var refNum = references.length;
-          $(elem).replaceWith(
-            '<sup><a href="#fn'+refNum+'" id="fna'+refNum
-            +'" style="'+aStyle+'">['+refNum+']</a></sup>'
-          );
+          $(elem).replaceWith(refLink(refNum));
         });
       }
     });
-    var refList = $('<ol style="'+pStyle+'"></ol>');
-    $(references).each(function(i, ref){
-      refList.append(
-        '<li id="fn'+(i+1)+'"><a href="#fna'+(i+1)
-        +'" style="'+aStyle+'">^</a> '+ref.innerHTML+'</li>'
-      );
-    });
-    var h1Style = "";
-    var firstH1 = $('h1').first();
-    if(firstH1){
-      var styleAttr = firstH1.attr('style');
-      if(styleAttr){
-        h1Style = styleAttr;
-      }
-    }
-
-    textDiv.append('<h1 style="'+h1Style+'">References</h1><hr>');
+    var refList = getRefList(references, ref_p_names);
     textDiv.append(refList);
+
     alert("Done!");
   });
 });
