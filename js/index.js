@@ -1,17 +1,20 @@
 $(function() {
-  var btn = $('#button');
-  var textDiv = $('#text');
+  var btn = $('#button'); // The button that triggers the conversion
+  var textDiv = $('#text'); // The main body of text
   var logDiv = $('#log');
   btn.click(function(){
-    var references = [];
-    var aStyle = "text-decoration: none;";
-    var aFirst = $('a').first();
+    var references = []; // A list to hold all references we find
+    var aStyle = "text-decoration: none;"; // Default style to be used for the
+    // superscript links that will be generated
+    var aFirst = $('a').first(); // Get the first link
     if(aFirst){
-      var aFirstStyle = aFirst.attr('style');
+      var aFirstStyle = aFirst.attr('style'); // If it has a style, use it as
+      // default style for new links instead
       if(aFirstStyle){
         aStyle = aFirstStyle;
       }
     }
+    // Same for paragraphs...
     var pStyle = "";
     var pFirst = $('p').first();
     if(pFirst){
@@ -21,8 +24,10 @@ $(function() {
       }
     }
     textDiv.children().each(function(i, elem){
+      // For each child element (usually <p>) in the text body
       var content = elem.innerHTML;
       if(content.match(/\[ref\]/g)){
+        // Replace [] with <> to take advantage of jQuery's find
         var new_content = content
           .replace(/\[ref\]/g, '<ref>')
           .replace(/\[\/ref\]/g, '</ref>');
