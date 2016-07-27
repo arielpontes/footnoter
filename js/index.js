@@ -3,8 +3,7 @@ $(function() {
   function loadSettings(){
     SETTINGS = {
       "medium": $("#medium")[0].checked,
-      "parenthesis": $("#parenthesis")[0].checked,
-      "reflist-title": $("#reflist-title").val()
+      "parenthesis": $("#parenthesis")[0].checked
     };
   }
 
@@ -45,13 +44,12 @@ $(function() {
 
   var btn = $('#button'); // The button that triggers the conversion
 
+  var textDiv = $('#text'); // The main body of text
+
   btn.click(function(){
 
     loadSettings();
     // Loads the settings specified by the user into the global variable SETTINGS
-
-    var textDiv = $('#text'); // The main body of text
-    var logDiv = $('#log');
 
     var reflistElem = textDiv.find(":contains('[reflist]'):last");
     // The element under which the reference list will be added
@@ -62,7 +60,7 @@ $(function() {
       return;
     }
     REFLIST_NAME = reflistElem.attr('name');
-    reflistElem.html(SETTINGS["reflist-title"]);
+    reflistElem.html(reflistElem.html().replace('[reflist]', ''));
 
     var references = [];
     // A list to hold all references we find
@@ -118,7 +116,8 @@ $(function() {
     });
     var refList = getRefList(references, ref_p_names);
     textDiv.append(refList);
-
-    alert("Done!");
+    textDiv.prop('contenteditable',false)
+    alert("Done! You can now copy the text and paste it back to your blog "
+      + "editor. Refresh the page to use footnoter again.");
   });
 });
