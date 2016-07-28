@@ -116,7 +116,6 @@ $(function() {
     });
     var refList = getRefList(references, ref_p_names);
     textDiv.append(refList);
-    textDiv.prop('contenteditable',false)
     alert("Done! You can now copy the text and paste it back to your blog "
       + "editor. Refresh the page to use footnoter again.");
   });
