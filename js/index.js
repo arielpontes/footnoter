@@ -20,7 +20,7 @@ $(function() {
   function refLink(refNum){
     if(SETTINGS["medium"]){
       var supRef = numToSup(refNum);
-      return '<a href="#'+REFLIST_NAME+'">'+supRef+'</a>';
+      return '<a href="#fn'+refNum+'">'+supRef+'</a>';
     } else {
       return '<sup><a href="#fn'+refNum+'" id="fna'+refNum
         +'" style="'+A_STYLE+'">['+refNum+']</a></sup>';
@@ -32,7 +32,7 @@ $(function() {
     $(references).each(function(i, ref){
       var ref_li;
       if(SETTINGS["medium"]){
-        ref_li = '<li><a href="#'+ ref_p_names[i] +'">^ </a> '+ref.innerHTML+'</li>';
+        ref_li = '<li name="fn'+(i+1)+'"><a href="#'+ ref_p_names[i] +'">^ </a> '+ref.innerHTML+'</li>';
       } else {
         ref_li = '<li id="fn'+(i+1)+'"><a href="#fna'+(i+1)
         +'" style="'+A_STYLE+'">^</a> '+ref.innerHTML+'</li>';
@@ -116,6 +116,11 @@ $(function() {
     });
     var refList = getRefList(references, ref_p_names);
     textDiv.append(refList);
+    if(SETTINGS['medium']){
+      textDiv.append('<p>&nbsp;</p>');
+      // This is necessary because Medium always updates the `name` attribute
+      // in the last element
+    }
     alert("Done! You can now copy the text and paste it back to your blog "
       + "editor. Refresh the page to use footnoter again.");
   });
