@@ -28,14 +28,14 @@ function refLink(refNum){
 function getRefList(references, ref_p_names){
   var refList = $('<ol></ol>');
   $(references).each(function(i, ref){
-    var ref_li;
-    if(SETTINGS["medium"]){
-      ref_li = '<li name="fn'+(i+1)+'"><a href="#'+ ref_p_names[i] +'">^ </a> '+ref+'</li>';
-    } else {
-      ref_li = '<li id="fn'+(i+1)+'"><a href="#fna'+(i+1)
-      +'" style="'+A_STYLE+'">^</a> '+ref+'</li>';
-    }
-    refList.append(ref_li);
+    var ref_li = $('<li name="fn'+(i+1)+'"></li>');
+
+    if(SETTINGS["medium"])
+      ref_li.html('<a href="#'+ ref_p_names[i] +'">^ </a> '+ref+'');
+    else
+      ref_li.html('<a href="#fna'+(i+1)+'" style="'+A_STYLE+'">^ </a> '+ref+'');
+
+    refList.append(ref_li.get(0));
   });
   return refList;
 }
@@ -73,16 +73,19 @@ $(function() {
     loadSettings();
     // Loads the settings specified by the user into the global variable SETTINGS
 
-    var reflistElem = textDiv.find(":contains('[reflist]'):last");
+    var reflistElem = textDiv.find('> :last-child');
     // The element under which the reference list will be added
-    if(!reflistElem.length){
-      alert(
-        "Your text must include the code '[reflist]'. "
-        + "This is where the reference list will be added.");
-      return;
+    // In principle take the last element
+
+    if(reflistElem.is('ol')){
+      // If there is already a list, take the previous element
+      reflistElem = reflistElem.prev();
+    } else if(reflistElem.is('p') && (reflistElem.html() == '&nbsp;')){
+      // If there is a list and a space, take the element before the list
+      reflistElem = reflistElem.prev().prev();
     }
+
     REFLIST_NAME = reflistElem.attr('name');
-    reflistElem.html(reflistElem.html().replace('[reflist]', ''));
 
     var references = [];
     // A list to hold all references we find
@@ -145,6 +148,8 @@ $(function() {
         }
         ref_p_names.push(ref_p_name);
         var refNum = references.length;
+        if($elem.parent().is('sup'))
+          $elem = $elem.parent()
         $elem.replaceWith(refLink(refNum));
       });
     }
