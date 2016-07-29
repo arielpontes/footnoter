@@ -66,7 +66,7 @@ $(function() {
 
   var btn = $('#button'); // The button that triggers the conversion
 
-  var textDiv = $('#text'); // The main body of text
+  var textDiv = $('div.section-inner'); // The main body of text
 
   btn.click(function(){
 
@@ -77,12 +77,14 @@ $(function() {
     // The element under which the reference list will be added
     // In principle take the last element
 
+    while(reflistElem.is('p') && (reflistElem.html() == '&nbsp;')){
+      textDiv.find('> :last-child').remove();
+      reflistElem = textDiv.find('> :last-child');
+    }
+
     if(reflistElem.is('ol')){
       // If there is already a list, take the previous element
       reflistElem = reflistElem.prev();
-    } else if(reflistElem.is('p') && (reflistElem.html() == '&nbsp;')){
-      // If there is a list and a space, take the element before the list
-      reflistElem = reflistElem.prev().prev();
     }
 
     REFLIST_NAME = reflistElem.attr('name');
@@ -125,38 +127,36 @@ $(function() {
     }
 
     var content = textDiv.html();
-    if(content.match(/\[ref\]/g)){
-      // Replace [] with <> to take advantage of jQuery's find
-      var new_content = content
-        .replace(/\[ref\]/g, '<ref>')
-        .replace(/\[\/ref\]/g, '</ref>');
-      textDiv.html(new_content);
+    // Replace [] with <> to take advantage of jQuery's find
+    var new_content = content
+      .replace(/\[ref\]/g, '<ref>')
+      .replace(/\[\/ref\]/g, '</ref>');
+    textDiv.html(new_content);
 
-      // Get all references. The existing references will be anchor tags, the
-      // new ones will be ref tags.
-      refSelectorArray.push('ref');
-      var allRefsSelector = refSelectorArray.join(', ');
-      textDiv.find(allRefsSelector).each(function(i, elem){
-        // Loop through the inline references
-        var $elem = $(elem);
-        var ref_p_name = $elem.parent().closest('p').attr('name');
-        if($elem.is('a')){
-          var refName = $elem.attr('href').replace('#', '');
-          references.push(existingRefContent[refName].trim());
-        } else {
-          references.push(elem.innerHTML);
-        }
-        ref_p_names.push(ref_p_name);
-        var refNum = references.length;
-        if($elem.parent().is('sup'))
-          $elem = $elem.parent()
-        $elem.replaceWith(refLink(refNum));
-      });
-    }
+    // Get all references. The existing references will be anchor tags, the
+    // new ones will be ref tags.
+    refSelectorArray.push('ref');
+    var allRefsSelector = refSelectorArray.join(', ');
+    textDiv.find(allRefsSelector).each(function(i, elem){
+      // Loop through the inline references
+      var $elem = $(elem);
+      var ref_p_name = $elem.parent().closest('p').attr('name');
+      if($elem.is('a')){
+        var refName = $elem.attr('href').replace('#', '');
+        references.push(existingRefContent[refName].trim());
+      } else {
+        references.push(elem.innerHTML);
+      }
+      ref_p_names.push(ref_p_name);
+      var refNum = references.length;
+      if($elem.parent().is('sup'))
+        $elem = $elem.parent()
+      $elem.replaceWith(refLink(refNum));
+    });
     var refList = getRefList(references, ref_p_names);
     textDiv.append(refList);
     if(SETTINGS['medium']){
-      if(!refList.next('p')){
+      if(!refList.next('p').length){
         textDiv.append('<p>&nbsp;</p>');
       }
       // This is necessary because Medium always updates the `name` attribute
