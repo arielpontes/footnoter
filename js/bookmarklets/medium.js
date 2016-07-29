@@ -105,9 +105,11 @@ function main(){
   }
   var newWindow = window.open();
   newWindow.document.write(
-    '<html><head><title>Done!</title></head>'
-    +'<body style="font-family: Helvetica, sans-serif; padding: 10px;">'
-    +'<h1>Done!</h1>'
+    '<html><head><title>Done!</title>'
+    +'<style>body{padding: 0 20px 0 20px;font-family: Helvetica, sans-serif;'
+    +'font-weight: 100;color: #262626;}div{display: inline-block;'
+    +'margin: 10px 0 0 0;border: 1px solid #dddddd;padding: 20px;width: 645px;}'
+    +'</style></head><body><h1>Done!</h1>'
     +'<p>Now just copy the resulting text below and paste it back to your Medium post.</p>'
     +'<div contenteditable="true" style="border:1px solid #dddddd;padding:10px;">'
     +textDiv.html()+'</div></body></html>'
