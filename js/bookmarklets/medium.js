@@ -107,15 +107,15 @@ function main(){
   newWindow.document.write(
     '<html><head><title>Done!</title>'
     +'<style>body{padding: 0 20px 0 20px;font-family: Helvetica, sans-serif;'
-    +'font-weight: 100;color: #262626;}div{display: inline-block;'
-    +'margin: 10px 0 0 0;border: 1px solid #dddddd;padding: 20px;width: 645px;}'
-    +'</style></head><body><h1>Done!</h1>'
-    +'<p>Now just copy the resulting text below and paste it back to your Medium post.</p>'
-    +'<div contenteditable="true" style="border:1px solid #dddddd;padding:10px;">'
+    +'font-weight: 100;color: #262626;}div.section-inner{display: inline-block;'
+    +'margin: 10px 0 0 0;border: 1px solid #dddddd;padding: 20px;width: 722px;}'
+    +'p.message{width:722px;}</style></head><body><h1>Done!</h1>'
+    +'<p class="message">Now just copy the resulting text below and paste it '
+    +'back to your Medium post. Nevermind if it looks ugly, it should look '
+    +'good again once you paste it into the Medium editor ;)</p>'
+    +'<div class="section-inner" contenteditable="true" style="border:1px solid #dddddd;padding:10px;">'
     +textDiv.html()+'</div></body></html>'
   );
-  // alert("Done! You can now copy the text and paste it back to your blog "
-  //   + "editor. Refresh the page to use footnoter again.");
-  // Over!
+  // Done!
 }
 main();
