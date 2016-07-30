@@ -15,7 +15,7 @@ function getRefList(references, ref_p_names){
   var refList = $('<ol></ol>');
   $(references).each(function(i, ref){
     var ref_li = $('<li name="fn'+(i+1)+'"></li>');
-    ref_li.html('<a href="#'+ ref_p_names[i] +'">^ </a> '+ref+'');
+    ref_li.html('<a href="#'+ ref_p_names[i] +'">^</a>&nbsp;&nbsp;'+ref+'');
     refList.append(ref_li.get(0));
   });
   return refList;
@@ -44,7 +44,11 @@ function main(){
   // A list to hold all references we find
 
   var existingRefs = $('a').filter(function(){
-    return $(this).attr('href').match(/^#fn\d{1}$/);
+    $this = $(this);
+    return (
+      $this.attr('href').match(/^#fn\d*$/)
+      && $this.html().match(/^ [¹²³⁴⁵⁶⁷⁸⁹][⁰¹²³⁴⁵⁶⁷⁸⁹]*$/)
+    );
   });
   // The ol with the existing references
 
@@ -61,7 +65,7 @@ function main(){
     thereWereRefs = true;
     ol = reflistElem.find('+ol');
     existingRefs.each(function(i, a){
-      var href = $(a).attr('href');
+      var href = $(a).attr('href').match(/^#fn\d*$/)[0];
       refSelectorArray.push('a[href="'+href+'"]');
       var refName = href.replace('#', '');
       var li = ol.find('li[name="'+refName+'"]');
@@ -85,10 +89,10 @@ function main(){
   textDiv.find(allRefsSelector).each(function(i, elem){
     // Loop through the inline references
     var $elem = $(elem);
-    var ref_p_name = $elem.parent().closest('p').attr('name');
+    var ref_p_name = $elem.parent().attr('name');
     if($elem.is('a')){
       var refName = $elem.attr('href').replace('#', '');
-      references.push(existingRefContent[refName].trim());
+      references.push(existingRefContent[refName].trim().replace(/&nbsp/g, ''));
     } else {
       references.push(elem.innerHTML);
     }
