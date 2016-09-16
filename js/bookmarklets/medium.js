@@ -8,14 +8,14 @@ function numToSup(num){
 
 function refLink(refNum){
   var supRef = numToSup(refNum);
-  return '<a href="#fn'+refNum+'">'+supRef+'</a>';
+  return '<a href="http://www.toberemoved.com#fn'+refNum+'">'+supRef+'</a>';
 }
 
 function getRefList(references, ref_p_names){
   var refList = $('<ol></ol>');
   $(references).each(function(i, ref){
     var ref_li = $('<li name="fn'+(i+1)+'"></li>');
-    ref_li.html('<a href="#'+ ref_p_names[i] +'">^</a>&nbsp;&nbsp;'+ref+'');
+    ref_li.html('<a href="http://www.toberemoved.com#'+ ref_p_names[i] +'">^</a>&nbsp;&nbsp;'+ref+'');
     refList.append(ref_li.get(0));
   });
   return refList;
@@ -120,35 +120,36 @@ function main(){
     </head>\
     <body><h1>Done!</h1>\
     <p class="message">Now just copy the resulting text below and paste it\
-    back to your Medium post. Nevermind if it looks ugly, it should look\
-    good again once you paste it into the Medium editor ;)</p>\
+    back to your Medium post. Nevermind if it looks ugly from here, it should\
+    look good again once you paste it into the Medium editor ;)</p>\
     <div class="section-inner" contenteditable="true" style="border:1px solid #dddddd;padding:10px;">'
-    +textDiv.html()+'</div>'
-    + '<script>'
-    + '$(document).on("copy", function(e) {\
-        // alert("Pronto!");\
-        e.preventDefault();\
-        if (window.getSelection) {\
-          sel = window.getSelection();\
-          if (sel.rangeCount) {\
-            range = sel.getRangeAt(0);\
-            nodes = range.cloneContents().childNodes\
-            content = ""\
-            contentPlain = ""\
-            for (var i = 0; i < nodes.length; i++) {\
-              node = nodes[i];\
-              contentPlain += node.textContent\
-              if (node.nodeType == 3) {\
-                content += node.textContent\
-              } else if (node.nodeType == 1) {\
-                content += node.outerHTML\
+    + textDiv.html()
+    + '</div>\
+        <script>\
+        $(document).on("copy", function(e) {\
+          \
+          e.preventDefault();\
+          if (window.getSelection) {\
+            sel = window.getSelection();\
+            if (sel.rangeCount) {\
+              range = sel.getRangeAt(0);\
+              nodes = range.cloneContents().childNodes;\
+              content = "";\
+              contentPlain = "";\
+              for (var i = 0; i < nodes.length; i++) {\
+                node = nodes[i];\
+                contentPlain += node.textContent;\
+                if (node.nodeType == 3) {\
+                  content += node.textContent;\
+                } else if (node.nodeType == 1) {\
+                  content += node.outerHTML.replace(/http:\\/\\/www\\.toberemoved\\.com/g, "");\
+                }\
               }\
             }\
+            e.originalEvent.clipboardData.setData("text/html", content);\
+            e.originalEvent.clipboardData.setData("text/plain", contentPlain);\
           }\
-          e.originalEvent.clipboardData.setData("text/html", content);\
-          e.originalEvent.clipboardData.setData("text/plain", contentPlain);\
-        }\
-      });'
+        });'
     +'</script>'
     +'</body></html>'
   );
