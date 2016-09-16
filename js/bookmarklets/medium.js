@@ -108,17 +108,49 @@ function main(){
     // in the last element
   }
   var newWindow = window.open();
-  newWindow.document.write(
-    '<html><head><title>Done!</title>'
-    +'<style>body{padding: 0 20px 0 20px;font-family: Helvetica, sans-serif;'
-    +'font-weight: 100;color: #262626;}div.section-inner{display: inline-block;'
-    +'margin: 10px 0 0 0;border: 1px solid #dddddd;padding: 20px;width: 722px;}'
-    +'p.message{width:722px;}</style></head><body><h1>Done!</h1>'
-    +'<p class="message">Now just copy the resulting text below and paste it '
-    +'back to your Medium post. Nevermind if it looks ugly, it should look '
-    +'good again once you paste it into the Medium editor ;)</p>'
-    +'<div class="section-inner" contenteditable="true" style="border:1px solid #dddddd;padding:10px;">'
-    +textDiv.html()+'</div></body></html>'
+  newWindow.document.write('\
+    <html>\
+    <head>\
+      <title>Done!</title>\
+      <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>\
+      <style>body{padding: 0 20px 0 20px;font-family: Helvetica, sans-serif;\
+      font-weight: 100;color: #262626;}div.section-inner{display: inline-block;\
+      margin: 10px 0 0 0;border: 1px solid #dddddd;padding: 20px;width: 722px;}\
+      p.message{width:722px;}</style>\
+    </head>\
+    <body><h1>Done!</h1>\
+    <p class="message">Now just copy the resulting text below and paste it\
+    back to your Medium post. Nevermind if it looks ugly, it should look\
+    good again once you paste it into the Medium editor ;)</p>\
+    <div class="section-inner" contenteditable="true" style="border:1px solid #dddddd;padding:10px;">'
+    +textDiv.html()+'</div>'
+    + '<script>'
+    + '$(document).on("copy", function(e) {\
+        // alert("Pronto!");\
+        e.preventDefault();\
+        if (window.getSelection) {\
+          sel = window.getSelection();\
+          if (sel.rangeCount) {\
+            range = sel.getRangeAt(0);\
+            nodes = range.cloneContents().childNodes\
+            content = ""\
+            contentPlain = ""\
+            for (var i = 0; i < nodes.length; i++) {\
+              node = nodes[i];\
+              contentPlain += node.textContent\
+              if (node.nodeType == 3) {\
+                content += node.textContent\
+              } else if (node.nodeType == 1) {\
+                content += node.outerHTML\
+              }\
+            }\
+          }\
+          e.originalEvent.clipboardData.setData("text/html", content);\
+          e.originalEvent.clipboardData.setData("text/plain", contentPlain);\
+        }\
+      });'
+    +'</script>'
+    +'</body></html>'
   );
   // Done!
 }
